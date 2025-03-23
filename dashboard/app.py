@@ -5,7 +5,7 @@ import numpy as np
 import pydeck as pdk
 
 # Configuración datos
-data = pd.read_csv("../files/input/coordenadas.csv")
+data = pd.read_csv("./files/input/coordenadas.csv")
 data['lat'] = data['lat'].str.replace(',', '.').astype(float)
 data['lon'] = data['lon'].str.replace(',', '.').astype(float)
 
