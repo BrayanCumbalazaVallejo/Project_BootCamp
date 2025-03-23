@@ -12,5 +12,6 @@ setup(
         "pandas",
         "matplotlib",
         "ipykernel",
-    ],
-)
+        "streamlit",
+        "pydeck",
+    )
