@@ -22,15 +22,25 @@ menu = st.sidebar.radio(
 # Contenido de cada opción
 if menu == "Presentación":
     st.title("Análisis de la Accidentalidad en el Area Metropolitana entre los años 2015-2018🏙️🌄🚇")
-
-    st.markdown("""
----              
+    st.markdown("---")
+    col1, col2, col3 = st.columns(3)
+        
+    with col1:
+        st.markdown("""  
 ### **Integrantes**  
 - **Jerónimo Hoyos**  
 - **Santiago Sosa**  
 - **Brayan Cumbalaza**  
 - **Manuel D. Echeverry**  
+                 """)
+    with col2:
+        st.image("https://datosabiertos.metropol.gov.co/sites/default/files/2023-01/municipios_0.svg")
+    
+    with col3:
+        st.image("https://datosabiertos.metropol.gov.co/themes/custom/theme_datosabiertos/images/logos/datos-abiertos-logo.svg",width=250)
+        st.image("https://datosabiertos.metropol.gov.co/sites/default/files/2022-12/futuro-sostenible-logo.svg",width=230)
 
+    st.markdown("""
 ---
 
 ## **Introducción**  
@@ -101,3 +111,12 @@ st.sidebar.write("---")
 st.sidebar.write("Talento Tech")
 st.sidebar.write("Universidad Nacional de Colombia")
 st.sidebar.write("Sede Medellín")
+
+st.markdown("---")
+
+col1, col2 = st.columns([1, 2]) 
+with col1:
+    st.link_button("Repositorio", "https://streamlit.io/gallery")
+    st.image("https://img.icons8.com/?size=100&id=Mhl1TfJLdkh5&format=png&color=000000",width=110)
+with col2:
+    st.image("https://github.com/BrayanCumbalazaVallejo/Project_BootCamp/commits/main/",width=400)
