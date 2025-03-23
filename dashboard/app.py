@@ -116,7 +116,7 @@ st.markdown("---")
 
 col1, col2 = st.columns([1, 2]) 
 with col1:
-    st.link_button("Repositorio", "https://streamlit.io/gallery")
+    st.link_button("Repositorio", "https://github.com/BrayanCumbalazaVallejo/Project_BootCamp")
     st.image("https://img.icons8.com/?size=100&id=Mhl1TfJLdkh5&format=png&color=000000",width=110)
 with col2:
-    st.image("https://github.com/BrayanCumbalazaVallejo/Project_BootCamp/commits/main/",width=400)
+    st.image("https://lh4.googleusercontent.com/proxy/WNtyuTbDjnnITJFxg1dlI63L0jfIMRf0CIKg75VavFd3ameUuokpEiXIZvafO0UbA3rGKkhjDZ2HFtRWcGiPIn7Syd37PqnCrQuXFNHguRRPYm__safRJi9Q",width=400)
