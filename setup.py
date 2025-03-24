@@ -14,4 +14,6 @@ setup(
         "ipykernel",
         "streamlit",
         "pydeck",
+        "geopy",
+        "googlemaps",
     )
