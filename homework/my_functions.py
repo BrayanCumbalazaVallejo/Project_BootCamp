@@ -74,3 +74,27 @@ def convertir_mes(mes):
         12: 'diciembre'
     }
     return meses.get(mes, 0)
+
+
+def muertos_heridos_daños(muertos, heridos, daños, PALABRA):
+    muertos = muertos / muertos.sum()
+    heridos = heridos / heridos.sum()
+    daños = daños / daños.sum()
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    width = 0.25
+    x = range(len(muertos))
+
+    ax.barh(x, muertos, height=width, color='red', label="Muertos")
+    ax.barh([i + width for i in x], heridos, height=width, color='blue', label="Heridos")
+    ax.barh([i + 2 * width for i in x], daños, height=width, color='green', label="Daños")
+
+    ax.set_title(f"Muertos, Heridos y Daños por {PALABRA}")
+    ax.set_xlabel("Porcentaje Normalizado")
+    ax.set_ylabel(f"{PALABRA}")
+    ax.set_yticks([i + width for i in x])
+    ax.set_yticklabels(muertos.index)
+
+    ax.legend()
+    plt.show()
