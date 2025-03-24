@@ -18,13 +18,10 @@ def delete_barrios_sin_info(data):
     data = data[data['CLASE'] != 'sin información']
     return data
 
+
+import matplotlib.pyplot as plt
+
 def graficar_histogramas(data):
-    """
-    Genera histogramas para todas las columnas del DataFrame excepto:
-    - COD_MUNICIPIO
-    - FECHA
-    - DIRECCIÓN
-    """
     columnas_excluir = {'COD_MUNICIPIO', 'FECHA', 'HORA', 'DIRECCIÓN', 'BARRIO'}
     columnas_a_graficar = [col for col in data.columns if col not in columnas_excluir]
     
@@ -32,33 +29,48 @@ def graficar_histogramas(data):
         plt.figure(figsize=(8, 4))
         
         if data[columna].dtype == 'object' or data[columna].dtype.name == 'category':
-            data[columna] = data[columna].astype(str).str.lower().fillna("desconocido")  # Manejo de NaN
-            data[columna].value_counts().plot(kind='bar', color='skyblue', edgecolor='black')
-            plt.ylabel("Frecuencia")
+            data[columna].value_counts().plot(kind='barh', color='skyblue', edgecolor='black')
+            plt.xlabel("Frecuencia")
         else:
-            plt.hist(data[columna].dropna(), bins=20, color='lightcoral', edgecolor='black', alpha=0.7)
-            plt.ylabel("Frecuencia")
+            plt.hist(data[columna].dropna(), bins=20, color='lightcoral', edgecolor='black', alpha=0.7, orientation='horizontal')
+            plt.xlabel("Frecuencia")
         
         plt.title(f"Distribución de '{columna}'")
-        plt.xlabel("Valores")
-        plt.xticks(rotation=45)
-        plt.grid(axis='y', alpha=0.5)
+        plt.ylabel("Valores")
+        plt.grid(axis='x', alpha=0.5)
         plt.show()
+
+
+
 
 def convertir_hora(hora):
     hora = hora.strip().lower()
-
-    # Caso para formato PM (si contiene 'p')
     if 'p' in hora:
-        match = re.match(r'(\d+):\d+', hora)  # Solo hora y minutos
+        match = re.match(r'(\d+):\d+', hora)
         if match:
             hora_pm = int(match.group(1))
-            if hora_pm < 12:  # Si es menor a 12, sumamos 12
+            if hora_pm < 12:
                 hora_pm += 12
-            return f'{hora_pm}:00'  # Solo devolvemos horas y minutos
+            return hora_pm
 
-    # Si no tiene 'p', asumimos que es formato 24 horas
     else:
-        match = re.match(r'(\d+):\d+', hora)  # Solo hora y minutos
+        match = re.match(r'(\d+):\d+', hora)
         if match:
-            return f'{match.group(1)}:00'  # Devolvemos la hora en formato 24h
+            return int(match.group(1))
+
+def convertir_mes(mes):
+    meses = {
+        1: 'enero',
+        2: 'febrero',
+        3: 'marzo',
+        4: 'abril',
+        5: 'mayo',
+        6: 'junio',
+        7: 'julio',
+        8: 'agosto',
+        9: 'septiembre',
+        10: 'octubre',
+        11: 'noviembre',
+        12: 'diciembre'
+    }
+    return meses.get(mes, 0)
