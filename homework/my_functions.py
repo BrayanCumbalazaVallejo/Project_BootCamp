@@ -87,8 +87,8 @@ def muertos_heridos_daños(muertos, heridos, daños, PALABRA):
     x = range(len(muertos))
 
     ax.barh(x, muertos, height=width, color='red', label="Muertos")
-    ax.barh([i + width for i in x], heridos, height=width, color='blue', label="Heridos")
-    ax.barh([i + 2 * width for i in x], daños, height=width, color='green', label="Daños")
+    ax.barh([i + width for i in x], heridos, height=width, color='green', label="Heridos")
+    ax.barh([i + 2 * width for i in x], daños, height=width, color='blue', label="Daños")
 
     ax.set_title(f"Muertos, Heridos y Daños por {PALABRA}")
     ax.set_xlabel("Porcentaje Normalizado")
