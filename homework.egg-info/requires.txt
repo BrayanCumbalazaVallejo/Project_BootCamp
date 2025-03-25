@@ -3,3 +3,9 @@ seaborn
 pandas
 matplotlib
 ipykernel
+streamlit
+pydeck
+geopy
+googlemaps
+tensorflow
+scikit-learn

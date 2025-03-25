@@ -7,3 +7,6 @@ streamlit
 pydeck
 geopy
 googlemaps
+tensorflow
+sklearn
+scikit-learn

@@ -2,7 +2,15 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+import tensorflow as tf
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 import pydeck as pdk
+
+## Modelo de red neuronal
+# Cargar el modelo
+modelo = tf.keras.models.load_model("./redNeuronal/checkpoint.modelo.keras")
+dataLimpia = pd.read_csv("./files/input/data.csv")
+
 
 # Configuración datos
 data = pd.read_csv("./files/input/coordenadas.csv")
@@ -24,7 +32,7 @@ if menu == "Presentación":
     st.title("Análisis de la Accidentalidad en el Area Metropolitana entre los años 2015-2018🏙️🌄🚇")
     st.markdown("---")
     col1, col2, col3 = st.columns(3)
-        
+
     with col1:
         st.markdown("""  
 ### **Integrantes**  
@@ -35,7 +43,7 @@ if menu == "Presentación":
                  """)
     with col2:
         st.image("https://datosabiertos.metropol.gov.co/sites/default/files/2023-01/municipios_0.svg")
-    
+
     with col3:
         st.image("https://datosabiertos.metropol.gov.co/themes/custom/theme_datosabiertos/images/logos/datos-abiertos-logo.svg",width=250)
         st.image("https://datosabiertos.metropol.gov.co/sites/default/files/2022-12/futuro-sostenible-logo.svg",width=230)
@@ -70,13 +78,13 @@ El conjunto de datos está compuesto por **11 columnas**:
 ## **Objetivo del Análisis**  
 Este análisis tiene como objetivo identificar patrones y factores de riesgo en la accidentalidad, con el fin de proveer información para generar soluciones efectivas basadas en los hallazgos obtenidos. Para ello, se emplearán diversas herramientas visuales como gráficas de calor, gráficos de barras y mapas interactivos, utilizando herramientas como Streamlit, Google Maps, Pandas, Seaborn y NumPy.  
 """)
-    
+
 elif menu == "Gráficas":
     st.title("Acá iría el análisis explotario de datos")
 
 elif menu == "Mapa":
 
-# Configuración de los hexagonos
+    # Configuración de los hexagonos
     st.title("Los 100 lugares de Medellín con más accidentes")
     hexagonos = pdk.Layer(
     "HexagonLayer",
@@ -89,7 +97,7 @@ elif menu == "Mapa":
     extruded=True, #Volumen
     )
 
-# Configuración de la vista inicial
+    # Configuración de la vista inicial
     view_state = pdk.ViewState(
     latitude=data['lat'].mean(), #Centrar posición
     longitude=data['lon'].mean(), 
@@ -97,15 +105,65 @@ elif menu == "Mapa":
     pitch=50, #Inclinación
     )
 
-# Mostrar el mapa
+    # Mostrar el mapa
     st.pydeck_chart(pdk.Deck(layers=[hexagonos], initial_view_state=view_state))
 
-# Mostrar tabla
+    # Mostrar tabla
     st.subheader("Direcciones únicas con más accidentes")
     st.dataframe(data)
 
 elif menu == "Modelo Predictivo":
-    st.title("Acá iría modelo predictivo")
+    # Variables utilizadas
+    features = ["CLASE", "DÍA DE LA SEMANA", "MES", "HORA24", "DISEÑO", "COMUNA"]
+
+    # Inicializar transformaciones con los mismos parámetros usados en entrenamiento
+    encoder = OneHotEncoder(drop="first", sparse_output=False)
+    encoder.fit(dataLimpia[["CLASE", "DÍA DE LA SEMANA", "MES", "DISEÑO", "COMUNA"]])
+
+    scaler = StandardScaler()
+    scaler.fit(dataLimpia[["HORA24"]])
+
+    st.title("Modelo Predictivo de Accidentes")
+
+    clase = st.selectbox(
+        "Seleccione la clase de accidente", dataLimpia["CLASE"].unique()
+    )
+    dia_semana = st.selectbox(
+        "Seleccione el día de la semana", dataLimpia["DÍA DE LA SEMANA"].unique()
+    )
+    mes = st.selectbox("Seleccione el mes", dataLimpia["MES"].unique())
+    hora24 = st.selectbox(
+        "Seleccione la hora (24h)", sorted(dataLimpia["HORA24"].unique())
+    )
+    diseno = st.selectbox("Seleccione el diseño", dataLimpia["DISEÑO"].unique())
+    comuna = st.selectbox("Seleccione la comuna", dataLimpia["COMUNA"].unique())
+
+    # Convertir entrada del usuario a DataFrame
+    entrada_df = pd.DataFrame([[clase, dia_semana, mes, hora24, diseno, comuna]], 
+                            columns=["CLASE", "DÍA DE LA SEMANA", "MES", "HORA24", "DISEÑO", "COMUNA"])
+
+    # Aplicar transformaciones
+    entrada_encoded = encoder.transform(entrada_df[["CLASE", "DÍA DE LA SEMANA", "MES", "DISEÑO", "COMUNA"]])
+    entrada_scaled = scaler.transform(entrada_df[["HORA24"]])
+
+    # Unir las características transformadas
+    entrada_final = np.hstack((entrada_encoded, entrada_scaled)).astype(np.float32)
+
+    # Predicción
+    if st.button("Predecir"):
+        prediccion = modelo.predict(entrada_final)
+        clase_predicha = np.argmax(prediccion)  # Obtener la clase más probable
+        
+        # Diccionario para interpretar la salida
+        clases_dict = {0: "Daños materiales", 1: "Heridos", 2: "Muertos"}
+        
+        st.subheader("Resultado de la Predicción:")
+        st.write(f"⚠️ **Categoría predicha:** {clases_dict[clase_predicha]}")
+
+        st.subheader("Probabilidades por clase:")
+        for i, prob in enumerate(prediccion[0]):
+            st.write(f"📌 **{clases_dict[i]}**: {prob:.2%}")
+
 
 st.sidebar.write("---")
 st.sidebar.write("Talento Tech")

@@ -16,4 +16,6 @@ setup(
         "pydeck",
         "geopy",
         "googlemaps",
+        "tensorflow",
+        "scikit-learn"]
     )
