@@ -80,7 +80,52 @@ Este análisis tiene como objetivo identificar patrones y factores de riesgo en 
 """)
 
 elif menu == "Gráficas":
-    st.title("Acá iría el análisis explotario de datos")
+    august_grouped = (
+        dataLimpia[dataLimpia["MES"] == "agosto"]
+        .groupby(["AÑO", "DIA"])
+        .size()
+        .reset_index(name="Cantidad de accidentes")
+    )
+
+    august_pivot = august_grouped.pivot_table(
+        index="DIA", columns="AÑO", values="Cantidad de accidentes", fill_value=0
+    )
+
+    # Crear la figura
+    fig, ax = plt.subplots(figsize=(12, 6))
+
+    # Graficar cada año como una línea
+    for column in august_pivot.columns:
+        ax.plot(
+            august_pivot.index, august_pivot[column], label=f"Año {column}", marker="o"
+        )
+
+    # Títulos y etiquetas
+    ax.set_title("Cantidad de accidentes por día en agosto (2015-2017)", fontsize=14)
+    ax.set_xlabel("Día", fontsize=12)
+    ax.set_ylabel("Cantidad de accidentes", fontsize=12)
+    ax.set_xticks(august_pivot.index)
+    ax.set_xticklabels(august_pivot.index, rotation=45)
+    ax.legend(title="Año")
+
+    # Ajustar el diseño para evitar solapamientos
+    plt.tight_layout()
+
+    # Mostrar la gráfica en Streamlit
+    st.pyplot(fig)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 elif menu == "Mapa":
 
