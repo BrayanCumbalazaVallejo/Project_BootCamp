@@ -80,6 +80,7 @@ Este análisis tiene como objetivo identificar patrones y factores de riesgo en 
 """)
 
 elif menu == "Gráficas":
+    # Graficar la cantidad de accidentes por día en agosto
     august_grouped = (
         dataLimpia[dataLimpia["MES"] == "agosto"]
         .groupby(["AÑO", "DIA"])
@@ -91,7 +92,7 @@ elif menu == "Gráficas":
         index="DIA", columns="AÑO", values="Cantidad de accidentes", fill_value=0
     )
 
-    # Crear la figura
+    # Crear la figura para el gráfico de accidentes por día en agosto
     fig, ax = plt.subplots(figsize=(12, 6))
 
     # Graficar cada año como una línea
@@ -114,11 +115,32 @@ elif menu == "Gráficas":
     # Mostrar la gráfica en Streamlit
     st.pyplot(fig)
 
+    # Gráfica de la frecuencia por mes con la tendencia
+    data['MES'] = pd.Categorical(data['MES'], categories=["enero", "febrero", "marzo", "abril", "mayo", "junio", 
+                                                          "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"], 
+                                  ordered=True)
 
+    # Obtener la frecuencia por mes
+    frecuencia_por_mes = data["MES"].value_counts().sort_index()
 
+    # Crear la figura para el gráfico de barras con línea de tendencia
+    fig2, ax2 = plt.subplots(figsize=(12, 6))
 
+    # Graficar las barras
+    frecuencia_por_mes.plot(kind="bar", color="lightblue", ax=ax2, label="Frecuencia")
 
+    # Agregar una línea para la tendencia
+    frecuencia_por_mes.plot(kind="line", color="red", marker='o', ax=ax2, label="Tendencia")
 
+    # Añadir título y etiquetas
+    ax2.set_title("Frecuencia por Mes con Tendencia", fontsize=14)
+    ax2.set_xlabel("Mes", fontsize=12)
+    ax2.set_ylabel("Frecuencia", fontsize=12)
+    ax2.set_xticklabels(frecuencia_por_mes.index, rotation=45)
+    ax2.legend()
+
+    # Mostrar la gráfica en Streamlit
+    st.pyplot(fig2)
 
 
 
