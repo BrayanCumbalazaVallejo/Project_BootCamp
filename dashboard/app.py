@@ -29,7 +29,7 @@ menu = st.sidebar.radio(
 
 # Contenido de cada opción
 if menu == "Presentación":
-    st.title("Análisis de la Accidentalidad en el Area Metropolitana entre los años 2015-2018🏙️🌄🚇")
+    st.title("Análisis de la Accidentalidad en Medellín entre los años 2015-2017🏙️🌄🚇")
     st.markdown("---")
     col1, col2, col3 = st.columns(3)
 
@@ -80,7 +80,6 @@ Este análisis tiene como objetivo identificar patrones y factores de riesgo en 
 """)
 
 elif menu == "Gráficas":
-    # Graficar la cantidad de accidentes por día en agosto
     august_grouped = (
         dataLimpia[dataLimpia["MES"] == "agosto"]
         .groupby(["AÑO", "DIA"])
@@ -92,7 +91,7 @@ elif menu == "Gráficas":
         index="DIA", columns="AÑO", values="Cantidad de accidentes", fill_value=0
     )
 
-    # Crear la figura para el gráfico de accidentes por día en agosto
+    # Crear la figura
     fig, ax = plt.subplots(figsize=(12, 6))
 
     # Graficar cada año como una línea
@@ -113,36 +112,15 @@ elif menu == "Gráficas":
     plt.tight_layout()
 
     # Mostrar la gráfica en Streamlit
+    st.title("Análisis descriptivo📊📈")
+    st.markdown("---")
+    st.image("dashboard/figures/horas.png")
+    st.markdown("---")
+    st.image("dashboard/figures/semana.png")
+    st.markdown("---")
+    st.image("dashboard/figures/mes.png")
+    st.markdown("---")
     st.pyplot(fig)
-
-    # Gráfica de la frecuencia por mes con la tendencia
-    data['MES'] = pd.Categorical(data['MES'], categories=["enero", "febrero", "marzo", "abril", "mayo", "junio", 
-                                                          "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"], 
-                                  ordered=True)
-
-    # Obtener la frecuencia por mes
-    frecuencia_por_mes = data["MES"].value_counts().sort_index()
-
-    # Crear la figura para el gráfico de barras con línea de tendencia
-    fig2, ax2 = plt.subplots(figsize=(12, 6))
-
-    # Graficar las barras
-    frecuencia_por_mes.plot(kind="bar", color="lightblue", ax=ax2, label="Frecuencia")
-
-    # Agregar una línea para la tendencia
-    frecuencia_por_mes.plot(kind="line", color="red", marker='o', ax=ax2, label="Tendencia")
-
-    # Añadir título y etiquetas
-    ax2.set_title("Frecuencia por Mes con Tendencia", fontsize=14)
-    ax2.set_xlabel("Mes", fontsize=12)
-    ax2.set_ylabel("Frecuencia", fontsize=12)
-    ax2.set_xticklabels(frecuencia_por_mes.index, rotation=45)
-    ax2.legend()
-
-    # Mostrar la gráfica en Streamlit
-    st.pyplot(fig2)
-
-
 
 
 
@@ -152,7 +130,8 @@ elif menu == "Gráficas":
 elif menu == "Mapa":
 
     # Configuración de los hexagonos
-    st.title("Los 100 lugares de Medellín con más accidentes")
+    st.title("Los 100 lugares de Medellín con más accidentes 🗺️📌")
+    st.markdown("---")
     hexagonos = pdk.Layer(
     "HexagonLayer",
     data=data,
@@ -176,7 +155,9 @@ elif menu == "Mapa":
     st.pydeck_chart(pdk.Deck(layers=[hexagonos], initial_view_state=view_state))
 
     # Mostrar tabla
+    st.markdown("---")
     st.subheader("Direcciones únicas con más accidentes")
+    
     st.dataframe(data)
 
 elif menu == "Modelo Predictivo":
@@ -190,8 +171,8 @@ elif menu == "Modelo Predictivo":
     scaler = StandardScaler()
     scaler.fit(dataLimpia[["HORA24"]])
 
-    st.title("Modelo Predictivo de Accidentes")
-
+    st.title("Modelo Predictivo de Accidentes de la gravedad del accidente🧠")
+    st.markdown("---")
     clase = st.selectbox(
         "Seleccione la clase de accidente", dataLimpia["CLASE"].unique()
     )
