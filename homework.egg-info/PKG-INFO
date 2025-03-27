@@ -1,10 +1,15 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: homework
 Version: 0.1
-Summary: UNKNOWN
-Home-page: UNKNOWN
-License: UNKNOWN
-Platform: UNKNOWN
-
-UNKNOWN
-
+Requires-Dist: numpy
+Requires-Dist: seaborn
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: ipykernel
+Requires-Dist: streamlit
+Requires-Dist: pydeck
+Requires-Dist: geopy
+Requires-Dist: googlemaps
+Requires-Dist: tensorflow
+Requires-Dist: scikit-learn
+Dynamic: requires-dist
